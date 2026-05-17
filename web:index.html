@@ -277,11 +277,20 @@ const dbGetOne = idx => new Promise(r => { const q = tx().getAll(); q.onsuccess 
 
 async function dbSave(blob) {
   const cnt = await dbCount();
-  const t = db.transaction('sounds', 'readwrite');
-  const s = t.objectStore('sounds');
-  if (cnt >= 50) await new Promise(r => { const c = s.openCursor(); c.onsuccess = e => { e.target.result?.delete(); r(); }; });
-  s.add({ blob, ts: Date.now() });
-  return new Promise(r => t.oncomplete = r);
+  // readwrite 트랜잭션 안에서 await 쓰면 auto-commit 되므로 콜백으로만 처리
+  return new Promise((res, rej) => {
+    const t = db.transaction('sounds', 'readwrite');
+    const s = t.objectStore('sounds');
+    t.oncomplete = res;
+    t.onerror = rej;
+    const doAdd = () => s.add({ blob, ts: Date.now() });
+    if (cnt >= 50) {
+      const cr = s.openCursor();
+      cr.onsuccess = e => { if (e.target.result) e.target.result.delete(); doAdd(); };
+    } else {
+      doAdd();
+    }
+  });
 }
 
 // ── audio ──────────────────────────────────────────────
@@ -313,9 +322,10 @@ async function playBuffer(blob) {
 
 async function playOne(idx) {
   stopAudio();
+  getCtx();  // await 전에 AudioContext 초기화 (iOS 제스처 요구사항)
+  gainNode.gain.value = volume / 30;
   const item = await dbGetOne(idx);
   if (!item) return;
-  gainNode.gain.value = volume / 30;
   const src = await playBuffer(item.blob);
   src.onended = () => { if (listPlaying) { listPlaying = false; updateListUI(); } };
   currentSrcs = [src];
@@ -323,8 +333,9 @@ async function playOne(idx) {
 
 async function playAll() {
   stopAudio();
-  const all = await dbGetAll();
+  getCtx();  // await 전에 AudioContext 초기화
   gainNode.gain.value = volume / 30;
+  const all = await dbGetAll();
   const srcs = [];
   for (const item of all) { try { srcs.push(await playBuffer(item.blob)); } catch (e) {} }
   currentSrcs = srcs;
@@ -352,6 +363,7 @@ function goNext()  { if (!soundCount) return; if (selectedIdx < soundCount) sele
 
 async function togglePlay() {
   if (!soundCount) return;
+  getCtx();  // 제스처 컨텍스트 안에서 동기적으로 호출
   listPlaying = !listPlaying;
   if (listPlaying) await playOne(selectedIdx); else stopAudio();
   updateListUI();
@@ -399,6 +411,7 @@ function stopRec() {
 // ── play all ───────────────────────────────────────────
 async function startAll() {
   if (!soundCount) return;
+  getCtx();  // 제스처 컨텍스트 안에서 동기적으로 호출
   show('s-all');
   await playAll();
 }
