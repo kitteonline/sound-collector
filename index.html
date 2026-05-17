@@ -140,7 +140,8 @@ body {
 }
 .nbtn:not(:last-child) { border-right: 1px solid var(--dgray); }
 .nbtn:active { background: #111; }
-.nbtn.on { color: var(--green); }
+.nbtn.on  { color: var(--green); }
+.nbtn.red { color: var(--red);   }
 
 /* ── volume slider (right strip) ── */
 .vol-strip {
@@ -220,12 +221,12 @@ body {
 <!-- ── PLAYING ALL ── -->
 <div class="sc" id="s-all">
   <div class="bar top-green">
-    <span>▶ playing all</span><span></span>
+    <span>▶ playing all</span><span>↻ looping</span>
   </div>
   <div class="mid">
     <div style="font-size:clamp(18px,5vw,26px)">all sounds</div>
     <div style="font-size:clamp(18px,5vw,26px);color:var(--mgray)">layered...</div>
-    <button class="ibtn green" id="stop-all">stop</button>
+    <button class="ibtn green" id="stop-all">← back</button>
   </div>
 </div>
 
@@ -253,6 +254,7 @@ body {
   <div class="nav-bar">
     <button class="nbtn" id="prev-btn">← PREV</button>
     <button class="nbtn" id="play-btn">PLAY</button>
+    <button class="nbtn red" id="del-btn">DEL</button>
     <button class="nbtn" id="next-btn">NEXT →</button>
   </div>
 </div>
@@ -267,7 +269,7 @@ z-index:999;max-width:85%;text-align:center;pointer-events:none;"></div>
 // ── state ──────────────────────────────────────────────
 let sounds = [], soundCount = 0, selectedIdx = 1, listPlaying = false, volume = 20;
 let db = null, activeAudios = [], mediaRec = null, recChunks = [], recRaf = null;
-let visAC = null, visRaf = null;
+let visAC = null, visRaf = null, playAllLooping = false;
 
 // ── 토스트 알림 ────────────────────────────────────────
 function toast(msg) {
@@ -312,6 +314,27 @@ async function reloadSounds() {
   sounds     = await dbLoadAll();
   soundCount = sounds.length;
 }
+function dbDelete(id) {
+  return new Promise((res, rej) => {
+    const t = db.transaction('sounds', 'readwrite');
+    t.oncomplete = res; t.onerror = () => rej(t.error);
+    t.objectStore('sounds').delete(id);
+  });
+}
+async function deleteSelected() {
+  if (!soundCount) return;
+  const item = sounds[selectedIdx - 1];
+  if (!item) return;
+  stopAudio(); listPlaying = false;
+  try {
+    await dbDelete(item.id);
+    await reloadSounds();
+    toast(`sound #${String(selectedIdx).padStart(2,'0')} 삭제됨`);
+    if (soundCount === 0) { goMain(); return; }
+    if (selectedIdx > soundCount) selectedIdx = soundCount;
+    refreshList();
+  } catch(e) { toast('삭제 오류: ' + e.message); }
+}
 
 // ── 오디오 재생 — <audio> 엘리먼트 (Web Audio API 없음) ─
 function stopAudio() {
@@ -338,6 +361,7 @@ function playBlobEl(blob, onEnded) {
     try { URL.revokeObjectURL(url); } catch(e){}
     activeAudios = activeAudios.filter(a => a !== el);
     toast('재생 오류 (형식 미지원일 수 있음)');
+    if (onEnded) onEnded();
   };
   activeAudios.push(el);
   return el.play().catch(e => { toast('재생 실패: ' + e.message); });
@@ -482,13 +506,19 @@ function stopRec() {
   if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
 }
 
-// ── 전체 재생 ───────────────────────────────────────────
+// ── 전체 재생 (반복) ────────────────────────────────────
+function playAllOnce() {
+  if (!playAllLooping || !soundCount) return;
+  let remaining = sounds.length;
+  const done = () => { if (--remaining <= 0 && playAllLooping) setTimeout(playAllOnce, 400); };
+  sounds.forEach(item => playBlobEl(item.blob, done));
+}
 function startAll() {
   if (!soundCount) return;
   show('s-all');
   stopAudio();
-  // 모두 동시에 시작
-  sounds.forEach(item => playBlobEl(item.blob));
+  playAllLooping = true;
+  playAllOnce();
 }
 
 // ── 볼륨 ───────────────────────────────────────────────
@@ -511,11 +541,12 @@ function setupEvents() {
   $('rec-btn').addEventListener('click',  e => { e.stopPropagation(); startRec(); });
   $('all-btn').addEventListener('click',  e => { e.stopPropagation(); startAll(); });
   $('stop-rec').addEventListener('click', stopRec);
-  $('stop-all').addEventListener('click', () => { stopAudio(); goMain(); });
+  $('stop-all').addEventListener('click', () => { playAllLooping = false; stopAudio(); goMain(); });
   $('list-back').addEventListener('click', goMain);
   $('prev-btn').addEventListener('click', goPrev);
   $('play-btn').addEventListener('click', togglePlay);
   $('next-btn').addEventListener('click', goNext);
+  $('del-btn').addEventListener('click',  deleteSelected);
 
   const strip = $('vol-strip');
   let drag = false;
