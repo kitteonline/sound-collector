@@ -194,10 +194,12 @@ body {
     <span>sound collector</span>
     <span id="clock">--:--</span>
   </div>
-  <div class="mid" id="main-tap">
-    <div class="big" id="main-cnt">00</div>
-    <div class="sm">sounds</div>
-    <div class="hint">tap to browse</div>
+  <div class="mid" id="main-tap" style="position:relative;width:100%;cursor:pointer">
+    <canvas id="bubbles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+    <div id="main-empty" style="position:relative;text-align:center;pointer-events:none;opacity:.5">
+      <div class="sm">no sounds yet</div>
+      <div class="hint" style="margin-top:8px">⏺ REC to start</div>
+    </div>
   </div>
   <div class="main-footer">
     <button class="mfbtn red" id="rec-btn">⏺ REC</button>
@@ -227,6 +229,25 @@ body {
     <div style="font-size:clamp(18px,5vw,26px)">all sounds</div>
     <div style="font-size:clamp(18px,5vw,26px);color:var(--mgray)">layered...</div>
     <button class="ibtn green" id="stop-all">← back</button>
+  </div>
+</div>
+
+<!-- ── PREVIEW ── -->
+<div class="sc" id="s-preview">
+  <div class="bar">
+    <span style="color:var(--mgray)">preview</span>
+    <span id="prev-size" style="color:var(--mgray);font-size:11px"></span>
+  </div>
+  <div class="mid" style="gap:24px">
+    <div style="font-size:14px;color:var(--mgray)">방금 녹음한 소리예요</div>
+    <button id="prev-play-btn" style="padding:14px 36px;border:1px solid var(--red);color:var(--red);
+      background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">▶ 들어보기</button>
+    <div style="display:flex;gap:16px">
+      <button id="prev-save-btn" style="padding:14px 28px;border:1px solid var(--green);color:var(--green);
+        background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">SAVE</button>
+      <button id="prev-disc-btn" style="padding:14px 28px;border:1px solid var(--mgray);color:var(--mgray);
+        background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">DISCARD</button>
+    </div>
   </div>
 </div>
 
@@ -270,6 +291,7 @@ z-index:999;max-width:85%;text-align:center;pointer-events:none;"></div>
 let sounds = [], soundCount = 0, selectedIdx = 1, listPlaying = false, volume = 20;
 let db = null, activeAudios = [], mediaRec = null, recChunks = [], recRaf = null;
 let visAC = null, visRaf = null, playAllLooping = false;
+let previewBlob = null, previewAudio = null;
 
 // ── 토스트 알림 ────────────────────────────────────────
 function toast(msg) {
@@ -371,13 +393,62 @@ function playBlobEl(blob, onEnded) {
 const $ = id => document.getElementById(id);
 const show = id => document.querySelectorAll('.sc').forEach(s => s.classList.toggle('on', s.id === id));
 
-function refreshMain() { $('main-cnt').textContent = String(soundCount).padStart(2, '0'); }
+function formatTs(ts) {
+  if (!ts) return '';
+  const d = new Date(ts), pad = n => String(n).padStart(2,'0');
+  return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function seededRnd(n) {
+  n = ((n ^ 61) ^ (n >>> 16)) >>> 0;
+  n = (n + (n << 3)) >>> 0;
+  n = (n ^ (n >>> 4)) >>> 0;
+  n = (n * 0x27d4eb2d) >>> 0;
+  n = (n ^ (n >>> 15)) >>> 0;
+  return n / 4294967296;
+}
+function drawBubbles() {
+  const canvas = $('bubbles'), mid = $('main-tap'), empty = $('main-empty');
+  if (!canvas || !mid) return;
+  const W = mid.clientWidth, H = mid.clientHeight;
+  if (!W || !H) return;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+  if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
+  sounds.forEach(item => {
+    const id = (item.id || 1) >>> 0;
+    const r1 = seededRnd(id * 1664525 + 1013904223);
+    const r2 = seededRnd(id * 22695477 + (item.ts || 0) % 99991 + 1);
+    const r3 = seededRnd(id * 6364136  + 1442695040);
+    const x  = 20 + r1 * (W - 40);
+    const y  = 20 + r2 * (H - 40);
+    const r  = 2.5 + r3 * 4.5;
+    ctx.shadowColor = 'rgba(255,255,255,0.5)';
+    ctx.shadowBlur  = 6;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${(0.45 + r3 * 0.55).toFixed(2)})`;
+    ctx.fill();
+  });
+  ctx.shadowBlur = 0;
+}
+
+function refreshMain() { drawBubbles(); }
 
 function refreshList() {
   $('list-num').textContent  = soundCount ? '#' + String(selectedIdx).padStart(2, '0') : '#--';
   $('list-info').textContent = soundCount ? `${selectedIdx} / ${soundCount}` : '– / –';
-  $('list-lbl').textContent  = listPlaying ? 'playing...' : '';
-  $('play-btn').textContent  = listPlaying ? 'STOP' : 'PLAY';
+  const item = sounds[selectedIdx - 1];
+  const lbl  = $('list-lbl');
+  if (listPlaying) {
+    lbl.textContent = 'playing...'; lbl.style.color = '';
+  } else if (item && item.ts) {
+    lbl.textContent = formatTs(item.ts); lbl.style.color = 'var(--mgray)';
+  } else {
+    lbl.textContent = '';
+  }
+  $('play-btn').textContent = listPlaying ? 'STOP' : 'PLAY';
   $('play-btn').classList.toggle('on', listPlaying);
 }
 
@@ -391,7 +462,7 @@ function refreshVol() {
 }
 
 // ── 네비게이션 ─────────────────────────────────────────
-function goMain() { stopAudio(); listPlaying = false; refreshMain(); show('s-main'); }
+function goMain() { stopAudio(); listPlaying = false; show('s-main'); setTimeout(drawBubbles, 30); }
 
 function goList() {
   if (soundCount > 0 && selectedIdx > soundCount) selectedIdx = soundCount;
@@ -475,16 +546,18 @@ async function startRec() {
 
   recChunks = [];
   mediaRec.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
-  mediaRec.onstop = async () => {
+  mediaRec.onstop = () => {
     stopVisualizer();
     stream.getTracks().forEach(t => t.stop());
     if (recChunks.length > 0) {
-      const blob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
-      toast(`저장 중... (${(blob.size/1024).toFixed(0)}KB)`);
-      try { await dbSave(blob); await reloadSounds(); }
-      catch(e) { toast('저장 오류: ' + e.message); }
-    } else { toast('녹음 데이터 없음'); }
-    goMain();
+      previewBlob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
+      $('prev-size').textContent    = `${(previewBlob.size/1024).toFixed(0)} KB`;
+      $('prev-play-btn').textContent = '▶ 들어보기';
+      show('s-preview');
+    } else {
+      toast('녹음 데이터 없음');
+      goMain();
+    }
   };
 
   mediaRec.start(200);
@@ -504,6 +577,37 @@ async function startRec() {
 function stopRec() {
   cancelAnimationFrame(recRaf);
   if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+}
+
+function stopPreviewAudio() {
+  if (!previewAudio) return;
+  try { previewAudio.pause(); previewAudio.src = ''; URL.revokeObjectURL(previewAudio._url); } catch(e){}
+  previewAudio = null;
+  $('prev-play-btn').textContent = '▶ 들어보기';
+}
+function playPreview() {
+  if (previewAudio) { stopPreviewAudio(); return; }
+  if (!previewBlob) return;
+  const url = URL.createObjectURL(previewBlob);
+  previewAudio = document.createElement('audio');
+  previewAudio.setAttribute('playsinline', '');
+  previewAudio._url = url; previewAudio.src = url; previewAudio.volume = 1;
+  $('prev-play-btn').textContent = '■ playing...';
+  previewAudio.onended = () => { URL.revokeObjectURL(url); previewAudio = null; $('prev-play-btn').textContent = '▶ 들어보기'; };
+  previewAudio.onerror = () => { stopPreviewAudio(); toast('미리듣기 실패'); };
+  previewAudio.play().catch(e => { stopPreviewAudio(); toast('미리듣기 실패: ' + e.message); });
+}
+async function savePreview() {
+  stopPreviewAudio();
+  if (!previewBlob) { goMain(); return; }
+  const blob = previewBlob; previewBlob = null;
+  toast(`저장 중... (${(blob.size/1024).toFixed(0)}KB)`);
+  try { await dbSave(blob); await reloadSounds(); }
+  catch(e) { toast('저장 오류: ' + e.message); }
+  goMain();
+}
+function discardPreview() {
+  stopPreviewAudio(); previewBlob = null; goMain();
 }
 
 // ── 전체 재생 (반복) ────────────────────────────────────
@@ -547,6 +651,9 @@ function setupEvents() {
   $('play-btn').addEventListener('click', togglePlay);
   $('next-btn').addEventListener('click', goNext);
   $('del-btn').addEventListener('click',  deleteSelected);
+  $('prev-play-btn').addEventListener('click', playPreview);
+  $('prev-save-btn').addEventListener('click', savePreview);
+  $('prev-disc-btn').addEventListener('click', discardPreview);
 
   const strip = $('vol-strip');
   let drag = false;
@@ -561,7 +668,7 @@ function setupEvents() {
 // ── 초기화 ─────────────────────────────────────────────
 (async () => {
   try { db = await initDB(); await reloadSounds(); } catch(e) { toast('DB 오류: ' + e); }
-  refreshMain(); updateClock(); setInterval(updateClock, 30000); setupEvents();
+  setTimeout(drawBubbles, 100); updateClock(); setInterval(updateClock, 30000); setupEvents();
 })();
 </script>
 </body>
