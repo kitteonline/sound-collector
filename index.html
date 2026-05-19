@@ -192,6 +192,7 @@ body {
 <div class="sc on" id="s-main">
   <div class="bar">
     <span>sound collector</span>
+    <span id="tilt-btn" style="display:none;cursor:pointer;border:1px solid #444;color:#666;font-size:11px;padding:3px 8px;border-radius:4px;flex-shrink:0;">↕ tilt</span>
     <span id="clock">--:--</span>
   </div>
   <div class="mid" id="main-tap" style="position:relative;width:100%;cursor:pointer">
@@ -229,25 +230,6 @@ body {
     <div style="font-size:clamp(18px,5vw,26px)">all sounds</div>
     <div style="font-size:clamp(18px,5vw,26px);color:var(--mgray)">layered...</div>
     <button class="ibtn green" id="stop-all">← back</button>
-  </div>
-</div>
-
-<!-- ── PREVIEW ── -->
-<div class="sc" id="s-preview">
-  <div class="bar">
-    <span style="color:var(--mgray)">preview</span>
-    <span id="prev-size" style="color:var(--mgray);font-size:11px"></span>
-  </div>
-  <div class="mid" style="gap:24px">
-    <div style="font-size:14px;color:var(--mgray)">방금 녹음한 소리예요</div>
-    <button id="prev-play-btn" style="padding:14px 36px;border:1px solid var(--red);color:var(--red);
-      background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">▶ 들어보기</button>
-    <div style="display:flex;gap:16px">
-      <button id="prev-save-btn" style="padding:14px 28px;border:1px solid var(--green);color:var(--green);
-        background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">SAVE</button>
-      <button id="prev-disc-btn" style="padding:14px 28px;border:1px solid var(--mgray);color:var(--mgray);
-        background:none;font-family:inherit;font-size:15px;border-radius:6px;cursor:pointer">DISCARD</button>
-    </div>
   </div>
 </div>
 
@@ -291,7 +273,6 @@ z-index:999;max-width:85%;text-align:center;pointer-events:none;"></div>
 let sounds = [], soundCount = 0, selectedIdx = 1, listPlaying = false, volume = 20;
 let db = null, activeAudios = [], mediaRec = null, recChunks = [], recRaf = null;
 let visAC = null, visRaf = null, playAllLooping = false;
-let previewBlob = null, previewAudio = null;
 
 // ── 버블 물리 / 기울기 ────────────────────────────────
 let rawGx = 0, rawGy = 0;     // 기기에서 읽은 raw 기울기
@@ -478,12 +459,12 @@ function physLoop(t) {
   ctx.clearRect(0, 0, W, H);
 
   // 저역통과 필터: 급격한 기울기 변화 완화
-  tiltGx += (rawGx - tiltGx) * 0.06;
-  tiltGy += (rawGy - tiltGy) * 0.06;
+  tiltGx += (rawGx - tiltGx) * 0.14;
+  tiltGy += (rawGy - tiltGy) * 0.14;
 
-  const GRAV  = 0.10;   // 기울기 중력 세기
+  const GRAV  = 0.22;   // 기울기 중력 세기
   const DRIFT = 0.005;  // 무중력 유영 세기
-  const DAMP  = 0.96;   // 속도 감쇠
+  const DAMP  = 0.95;   // 속도 감쇠
 
   bubPhys.forEach(b => {
     // 무중력 유영 (각 버블마다 위상 다름)
@@ -527,24 +508,37 @@ function setupTilt() {
   if (typeof DeviceOrientationEvent === 'undefined') return;
 
   function onOrientation(e) {
-    const beta  = e.beta  ?? 90;  // 0=평평, 90=세로 직립
-    const gamma = e.gamma ?? 0;   // -90=왼쪽, +90=오른쪽
-    // 직립(beta≈90) 기준: 기울면 그 방향으로 중력
-    rawGx = Math.max(-1, Math.min(1,  gamma / 45));
-    rawGy = Math.max(-1, Math.min(1, (beta - 90) / 45));
+    const beta  = (e.beta  !== null && e.beta  !== undefined) ? e.beta  : 90;
+    const gamma = (e.gamma !== null && e.gamma !== undefined) ? e.gamma : 0;
+    rawGx = Math.max(-1, Math.min(1,  gamma / 35));
+    rawGy = Math.max(-1, Math.min(1, (beta - 90) / 35));
   }
 
   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    // iOS 13+ — 첫 터치 시 권한 요청
-    document.addEventListener('touchstart', function askPerm() {
-      if (tiltPermAsked) return;
-      tiltPermAsked = true;
+    // iOS 13+: 반드시 버튼 탭(직접 유저 제스처)에서 요청해야 함
+    const btn = $('tilt-btn');
+    btn.style.display = '';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
       DeviceOrientationEvent.requestPermission()
-        .then(p => { if (p === 'granted') window.addEventListener('deviceorientation', onOrientation); })
+        .then(p => {
+          if (p === 'granted') {
+            window.addEventListener('deviceorientation', onOrientation);
+            btn.textContent = '↕ on';
+            btn.style.color = 'var(--green)';
+            btn.style.borderColor = 'var(--green)';
+            setTimeout(() => { btn.style.display = 'none'; }, 1500);
+          } else {
+            btn.textContent = '↕ 거부됨';
+            btn.style.color = 'var(--red)';
+          }
+        })
         .catch(() => {});
-    }, { passive: true });
+    });
   } else {
+    // Android/기타: deviceorientation + absolute 둘 다 시도
     window.addEventListener('deviceorientation', onOrientation);
+    window.addEventListener('deviceorientationabsolute', onOrientation);
   }
 }
 
@@ -675,18 +669,17 @@ async function startRec() {
 
   recChunks = [];
   mediaRec.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
-  mediaRec.onstop = () => {
+  mediaRec.onstop = async () => {
     stopVisualizer();
     stream.getTracks().forEach(t => t.stop());
     if (recChunks.length > 0) {
-      previewBlob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
-      $('prev-size').textContent    = `${(previewBlob.size/1024).toFixed(0)} KB`;
-      $('prev-play-btn').textContent = '▶ 들어보기';
-      show('s-preview');
+      const blob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
+      try { await dbSave(blob); await reloadSounds(); }
+      catch(e) { toast('저장 오류: ' + e.message); }
     } else {
       toast('녹음 데이터 없음');
-      goMain();
     }
+    goMain();
   };
 
   mediaRec.start(200);
@@ -706,37 +699,6 @@ async function startRec() {
 function stopRec() {
   cancelAnimationFrame(recRaf);
   if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
-}
-
-function stopPreviewAudio() {
-  if (!previewAudio) return;
-  try { previewAudio.pause(); previewAudio.src = ''; URL.revokeObjectURL(previewAudio._url); } catch(e){}
-  previewAudio = null;
-  $('prev-play-btn').textContent = '▶ 들어보기';
-}
-function playPreview() {
-  if (previewAudio) { stopPreviewAudio(); return; }
-  if (!previewBlob) return;
-  const url = URL.createObjectURL(previewBlob);
-  previewAudio = document.createElement('audio');
-  previewAudio.setAttribute('playsinline', '');
-  previewAudio._url = url; previewAudio.src = url; previewAudio.volume = 1;
-  $('prev-play-btn').textContent = '■ playing...';
-  previewAudio.onended = () => { URL.revokeObjectURL(url); previewAudio = null; $('prev-play-btn').textContent = '▶ 들어보기'; };
-  previewAudio.onerror = () => { stopPreviewAudio(); toast('미리듣기 실패'); };
-  previewAudio.play().catch(e => { stopPreviewAudio(); toast('미리듣기 실패: ' + e.message); });
-}
-async function savePreview() {
-  stopPreviewAudio();
-  if (!previewBlob) { goMain(); return; }
-  const blob = previewBlob; previewBlob = null;
-  toast(`저장 중... (${(blob.size/1024).toFixed(0)}KB)`);
-  try { await dbSave(blob); await reloadSounds(); }
-  catch(e) { toast('저장 오류: ' + e.message); }
-  goMain();
-}
-function discardPreview() {
-  stopPreviewAudio(); previewBlob = null; goMain();
 }
 
 // ── 전체 재생 (반복) ────────────────────────────────────
@@ -780,9 +742,6 @@ function setupEvents() {
   $('play-btn').addEventListener('click', togglePlay);
   $('next-btn').addEventListener('click', goNext);
   $('del-btn').addEventListener('click',  deleteSelected);
-  $('prev-play-btn').addEventListener('click', playPreview);
-  $('prev-save-btn').addEventListener('click', savePreview);
-  $('prev-disc-btn').addEventListener('click', discardPreview);
 
   const strip = $('vol-strip');
   let drag = false;
