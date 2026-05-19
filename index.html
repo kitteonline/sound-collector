@@ -293,6 +293,13 @@ let db = null, activeAudios = [], mediaRec = null, recChunks = [], recRaf = null
 let visAC = null, visRaf = null, playAllLooping = false;
 let previewBlob = null, previewAudio = null;
 
+// ── 버블 물리 / 기울기 ────────────────────────────────
+let rawGx = 0, rawGy = 0;     // 기기에서 읽은 raw 기울기
+let tiltGx = 0, tiltGy = 0;   // 저역통과 필터 적용값
+let bubPhys = [];              // [{x,y,vx,vy,r,alpha,phase}]
+let physRaf = null, physRunning = false;
+let tiltPermAsked = false;
+
 // ── 토스트 알림 ────────────────────────────────────────
 function toast(msg) {
   const el = $('toast');
@@ -358,13 +365,11 @@ async function deleteSelected() {
   } catch(e) { toast('삭제 오류: ' + e.message); }
 }
 
-// ── 오디오 재생 — <audio> 엘리먼트 (Web Audio API 없음) ─
+// ── 오디오 재생 ────────────────────────────────────────
 function stopAudio() {
   activeAudios.forEach(a => { try { a.pause(); a.src = ''; } catch(e){} try { URL.revokeObjectURL(a._url); } catch(e){} });
   activeAudios = [];
 }
-
-// Promise: resolves when play STARTS (not ends)
 function playBlobEl(blob, onEnded) {
   if (!blob || blob.size === 0) { toast('소리 데이터 없음'); return Promise.resolve(); }
   const url = URL.createObjectURL(blob);
@@ -391,7 +396,12 @@ function playBlobEl(blob, onEnded) {
 
 // ── 화면 전환 ──────────────────────────────────────────
 const $ = id => document.getElementById(id);
-const show = id => document.querySelectorAll('.sc').forEach(s => s.classList.toggle('on', s.id === id));
+
+function show(id) {
+  document.querySelectorAll('.sc').forEach(s => s.classList.toggle('on', s.id === id));
+  if (id === 's-main') setTimeout(startPhysics, 60);
+  else stopPhysics();
+}
 
 function formatTs(ts) {
   if (!ts) return '';
@@ -399,6 +409,7 @@ function formatTs(ts) {
   return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// ── 버블 씨드 랜덤 (ESP32와 동일 LCG) ────────────────
 function seededRnd(n) {
   n = ((n ^ 61) ^ (n >>> 16)) >>> 0;
   n = (n + (n << 3)) >>> 0;
@@ -407,34 +418,152 @@ function seededRnd(n) {
   n = (n ^ (n >>> 15)) >>> 0;
   return n / 4294967296;
 }
-function drawBubbles() {
-  const canvas = $('bubbles'), mid = $('main-tap'), empty = $('main-empty');
+
+function makeBubble(item, W, H) {
+  const id = (item.id || 1) >>> 0;
+  const r1 = seededRnd(id * 1664525  + 1013904223);
+  const r2 = seededRnd(id * 22695477 + (item.ts || 0) % 99991 + 1);
+  const r3 = seededRnd(id * 6364136  + 1442695040);
+  const r4 = seededRnd(id * 2891336453 + 1234567);
+  const r5 = seededRnd(id * 1234567    + 9876543);
+  const r  = 2.5 + r3 * 4.5;
+  return {
+    x:     Math.max(r, Math.min(W - r, 20 + r1 * (W - 40))),
+    y:     Math.max(r, Math.min(H - r, 20 + r2 * (H - 40))),
+    vx:    (r4 - 0.5) * 0.5,
+    vy:    (r5 - 0.5) * 0.5,
+    r,
+    alpha: 0.45 + r3 * 0.55,
+    phase: seededRnd(id * 31337) * Math.PI * 2,
+  };
+}
+
+// ── 버블 물리 루프 ────────────────────────────────────
+function startPhysics() {
+  const canvas = $('bubbles'), mid = $('main-tap');
   if (!canvas || !mid) return;
+  stopPhysics();
+
+  const W = mid.clientWidth  || 300;
+  const H = mid.clientHeight || 400;
+  canvas.width  = W;
+  canvas.height = H;
+
+  const empty = $('main-empty');
+  if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
+
+  bubPhys = sounds.map(item => makeBubble(item, W, H));
+
+  physRunning = true;
+  physRaf = requestAnimationFrame(physLoop);
+}
+
+function stopPhysics() {
+  physRunning = false;
+  cancelAnimationFrame(physRaf);
+  physRaf = null;
+}
+
+function physLoop(t) {
+  if (!physRunning) return;
+  const canvas = $('bubbles'), mid = $('main-tap');
+  if (!canvas || !mid) { physRunning = false; return; }
+
   const W = mid.clientWidth, H = mid.clientHeight;
-  if (!W || !H) return;
-  canvas.width = W; canvas.height = H;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width = W; canvas.height = H;
+  }
+
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, W, H);
-  if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
-  sounds.forEach(item => {
-    const id = (item.id || 1) >>> 0;
-    const r1 = seededRnd(id * 1664525 + 1013904223);
-    const r2 = seededRnd(id * 22695477 + (item.ts || 0) % 99991 + 1);
-    const r3 = seededRnd(id * 6364136  + 1442695040);
-    const x  = 20 + r1 * (W - 40);
-    const y  = 20 + r2 * (H - 40);
-    const r  = 2.5 + r3 * 4.5;
-    ctx.shadowColor = 'rgba(255,255,255,0.5)';
-    ctx.shadowBlur  = 6;
+
+  // 저역통과 필터: 급격한 기울기 변화 완화
+  tiltGx += (rawGx - tiltGx) * 0.06;
+  tiltGy += (rawGy - tiltGy) * 0.06;
+
+  const GRAV  = 0.10;   // 기울기 중력 세기
+  const DRIFT = 0.005;  // 무중력 유영 세기
+  const DAMP  = 0.96;   // 속도 감쇠
+
+  bubPhys.forEach(b => {
+    // 무중력 유영 (각 버블마다 위상 다름)
+    b.vx += Math.sin(t * 0.00024 + b.phase)        * DRIFT;
+    b.vy += Math.cos(t * 0.00031 + b.phase * 1.37) * DRIFT;
+
+    // 기울기 중력
+    b.vx += tiltGx * GRAV;
+    b.vy += tiltGy * GRAV;
+
+    // 감쇠
+    b.vx *= DAMP;
+    b.vy *= DAMP;
+
+    // 위치 업데이트
+    b.x += b.vx;
+    b.y += b.vy;
+
+    // 벽 반사
+    if (b.x < b.r)     { b.x = b.r;     b.vx =  Math.abs(b.vx) * 0.4; }
+    if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * 0.4; }
+    if (b.y < b.r)     { b.y = b.r;     b.vy =  Math.abs(b.vy) * 0.4; }
+    if (b.y > H - b.r) { b.y = H - b.r; b.vy = -Math.abs(b.vy) * 0.4; }
+
+    // 그리기 (미세 글로우 펄스)
+    const glow = 0.25 + 0.15 * Math.sin(t * 0.0007 + b.phase);
+    ctx.shadowColor = `rgba(255,255,255,${glow.toFixed(2)})`;
+    ctx.shadowBlur  = 8;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${(0.45 + r3 * 0.55).toFixed(2)})`;
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${b.alpha.toFixed(2)})`;
     ctx.fill();
   });
   ctx.shadowBlur = 0;
+
+  physRaf = requestAnimationFrame(physLoop);
 }
 
-function refreshMain() { drawBubbles(); }
+// ── 기기 기울기 (자이로) ──────────────────────────────
+function setupTilt() {
+  if (typeof DeviceOrientationEvent === 'undefined') return;
+
+  function onOrientation(e) {
+    const beta  = e.beta  ?? 90;  // 0=평평, 90=세로 직립
+    const gamma = e.gamma ?? 0;   // -90=왼쪽, +90=오른쪽
+    // 직립(beta≈90) 기준: 기울면 그 방향으로 중력
+    rawGx = Math.max(-1, Math.min(1,  gamma / 45));
+    rawGy = Math.max(-1, Math.min(1, (beta - 90) / 45));
+  }
+
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iOS 13+ — 첫 터치 시 권한 요청
+    document.addEventListener('touchstart', function askPerm() {
+      if (tiltPermAsked) return;
+      tiltPermAsked = true;
+      DeviceOrientationEvent.requestPermission()
+        .then(p => { if (p === 'granted') window.addEventListener('deviceorientation', onOrientation); })
+        .catch(() => {});
+    }, { passive: true });
+  } else {
+    window.addEventListener('deviceorientation', onOrientation);
+  }
+}
+
+function refreshMain() {
+  if (physRunning) {
+    // 새 소리 추가됐으면 버블 동기화
+    const canvas = $('bubbles');
+    const W = canvas.width  || $('main-tap').clientWidth  || 300;
+    const H = canvas.height || $('main-tap').clientHeight || 400;
+    while (bubPhys.length < sounds.length) {
+      bubPhys.push(makeBubble(sounds[bubPhys.length], W, H));
+    }
+    bubPhys.length = sounds.length;
+    const empty = $('main-empty');
+    if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
+  } else {
+    startPhysics();
+  }
+}
 
 function refreshList() {
   $('list-num').textContent  = soundCount ? '#' + String(selectedIdx).padStart(2, '0') : '#--';
@@ -462,7 +591,7 @@ function refreshVol() {
 }
 
 // ── 네비게이션 ─────────────────────────────────────────
-function goMain() { stopAudio(); listPlaying = false; show('s-main'); setTimeout(drawBubbles, 30); }
+function goMain() { stopAudio(); listPlaying = false; show('s-main'); }
 
 function goList() {
   if (soundCount > 0 && selectedIdx > soundCount) selectedIdx = soundCount;
@@ -668,7 +797,10 @@ function setupEvents() {
 // ── 초기화 ─────────────────────────────────────────────
 (async () => {
   try { db = await initDB(); await reloadSounds(); } catch(e) { toast('DB 오류: ' + e); }
-  setTimeout(drawBubbles, 100); updateClock(); setInterval(updateClock, 30000); setupEvents();
+  setTimeout(startPhysics, 100);
+  updateClock(); setInterval(updateClock, 30000);
+  setupEvents();
+  setupTilt();
 })();
 </script>
 </body>
