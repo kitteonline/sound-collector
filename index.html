@@ -277,6 +277,7 @@ let visAC = null, visRaf = null, playAllLooping = false;
 // ── 버블 물리 / 기울기 ────────────────────────────────
 let rawGx = 0, rawGy = 0;     // 기기에서 읽은 raw 기울기
 let tiltGx = 0, tiltGy = 0;   // 저역통과 필터 적용값
+let calibBeta = null, calibGamma = null;  // 중립 자세 영점
 let bubPhys = [];              // [{x,y,vx,vy,r,alpha,phase}]
 let physRaf = null, physRunning = false;
 let tiltPermAsked = false;
@@ -534,8 +535,18 @@ function setupTilt() {
   function onOrientation(e) {
     const beta  = (e.beta  !== null && e.beta  !== undefined) ? e.beta  : 90;
     const gamma = (e.gamma !== null && e.gamma !== undefined) ? e.gamma : 0;
-    rawGx = Math.max(-1, Math.min(1,  gamma / 35));
-    rawGy = Math.max(-1, Math.min(1, (beta - 90) / 35));
+
+    // 첫 이벤트 = 현재 자세를 영점으로 기록
+    if (calibBeta === null) { calibBeta = beta; calibGamma = gamma; return; }
+
+    // 영점에서 벗어난 각도에 데드존(±10°) 적용 → 중립 자세에서는 중력 0
+    const DEAD = 10, RANGE = 30;
+    const dead = d => {
+      const s = d < 0 ? -1 : 1, a = Math.abs(d);
+      return a < DEAD ? 0 : s * Math.min(1, (a - DEAD) / RANGE);
+    };
+    rawGx = dead(gamma - calibGamma);
+    rawGy = dead(beta  - calibBeta);
   }
 
   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -544,6 +555,7 @@ function setupTilt() {
     btn.style.display = '';
     btn.addEventListener('click', e => {
       e.stopPropagation();
+      calibBeta = null; calibGamma = null;  // 탭할 때 영점 초기화 → 다음 이벤트에서 재보정
       DeviceOrientationEvent.requestPermission()
         .then(p => {
           if (p === 'granted') {
@@ -560,9 +572,9 @@ function setupTilt() {
         .catch(() => {});
     });
   } else {
-    // Android/기타: deviceorientation + absolute 둘 다 시도
+    // Android/기타: deviceorientation 사용, 첫 이벤트에서 자동 영점 보정
+    calibBeta = null; calibGamma = null;
     window.addEventListener('deviceorientation', onOrientation);
-    window.addEventListener('deviceorientationabsolute', onOrientation);
   }
 }
 
