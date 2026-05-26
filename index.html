@@ -11,22 +11,22 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
 
 :root {
-  --bg:    #000;
-  --white: #fff;
-  --dgray: #2a2a2a;
-  --mgray: #888;
-  --red:   #ff3333;
-  --green: #33ff88;
+--bg:    #000;
+--white: #fff;
+--dgray: #2a2a2a;
+--mgray: #888;
+--red:   #ff3333;
+--green: #33ff88;
 }
 
 body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Courier New', Courier, monospace;
-  height: 100dvh;
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
+background: var(--bg);
+color: var(--white);
+font-family: 'Courier New', Courier, monospace;
+height: 100dvh;
+overflow: hidden;
+position: fixed;
+width: 100%;
 }
 
 /* ── screens ── */
@@ -35,25 +35,25 @@ body {
 
 /* ── common ── */
 .bar {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--dgray);
-  font-size: 13px;
-  color: var(--mgray);
+flex-shrink: 0;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 18px;
+border-bottom: 1px solid var(--dgray);
+font-size: 13px;
+color: var(--mgray);
 }
 .bar.top-red   { color: var(--red);   border-color: #400; }
 .bar.top-green { color: var(--green); border-color: #040; }
 
 .mid {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 10px;
 }
 
 /* ── MAIN ── */
@@ -62,20 +62,20 @@ body {
 .hint { font-size: 13px; color: var(--mgray); opacity: .5; margin-top: 20px; }
 
 .main-footer {
-  flex-shrink: 0;
-  display: flex;
-  border-top: 1px solid var(--dgray);
+flex-shrink: 0;
+display: flex;
+border-top: 1px solid var(--dgray);
 }
 .mfbtn {
-  flex: 1;
-  padding: 20px;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--mgray);
-  cursor: pointer;
-  text-align: center;
+flex: 1;
+padding: 20px;
+background: none;
+border: none;
+font-family: inherit;
+font-size: 14px;
+color: var(--mgray);
+cursor: pointer;
+text-align: center;
 }
 .mfbtn.red { color: var(--red); }
 .mfbtn:not(:last-child) { border-right: 1px solid var(--dgray); }
@@ -84,23 +84,23 @@ body {
 /* ── RECORDING ── */
 .big-time { font-size: clamp(64px, 22vw, 100px); font-variant-numeric: tabular-nums; }
 .prog-track {
-  width: 68%;
-  height: 5px;
-  background: var(--dgray);
-  border-radius: 3px;
-  overflow: hidden;
+width: 68%;
+height: 5px;
+background: var(--dgray);
+border-radius: 3px;
+overflow: hidden;
 }
 .prog-fill { height: 100%; background: var(--red); width: 0; }
 
 /* ── buttons ── */
 .ibtn {
-  margin-top: 40px;
-  padding: 15px 40px;
-  background: none;
-  font-family: inherit;
-  font-size: 15px;
-  border-radius: 6px;
-  cursor: pointer;
+margin-top: 40px;
+padding: 15px 40px;
+background: none;
+font-family: inherit;
+font-size: 15px;
+border-radius: 6px;
+cursor: pointer;
 }
 .ibtn.red   { border: 1px solid var(--red);   color: var(--red);   }
 .ibtn.green { border: 1px solid var(--green);  color: var(--green); }
@@ -110,33 +110,33 @@ body {
 /* ── LIST ── */
 .list-wrap { flex: 1; display: flex; position: relative; overflow: hidden; }
 .list-mid {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding-right: 48px;
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding-right: 48px;
 }
 .list-num   { font-size: clamp(52px, 16vw, 80px); }
 .list-info  { font-size: 13px; color: var(--mgray); }
 .list-lbl   { font-size: 13px; color: var(--green); height: 18px; }
 
 .nav-bar {
-  flex-shrink: 0;
-  display: flex;
-  border-top: 1px solid var(--dgray);
+flex-shrink: 0;
+display: flex;
+border-top: 1px solid var(--dgray);
 }
 .nbtn {
-  flex: 1;
-  padding: 18px 0;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--mgray);
-  cursor: pointer;
-  text-align: center;
+flex: 1;
+padding: 18px 0;
+background: none;
+border: none;
+font-family: inherit;
+font-size: 13px;
+color: var(--mgray);
+cursor: pointer;
+text-align: center;
 }
 .nbtn:not(:last-child) { border-right: 1px solid var(--dgray); }
 .nbtn:active { background: #111; }
@@ -145,41 +145,41 @@ body {
 
 /* ── volume slider (right strip) ── */
 .vol-strip {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 12px 0;
-  border-left: 1px solid var(--dgray);
-  touch-action: none;
+position: absolute;
+right: 0;
+top: 0;
+bottom: 0;
+width: 48px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-end;
+padding: 12px 0;
+border-left: 1px solid var(--dgray);
+touch-action: none;
 }
 .vol-track {
-  flex: 1;
-  width: 4px;
-  background: var(--dgray);
-  border-radius: 2px;
-  position: relative;
-  margin-bottom: 8px;
+flex: 1;
+width: 4px;
+background: var(--dgray);
+border-radius: 2px;
+position: relative;
+margin-bottom: 8px;
 }
 .vol-fill {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: var(--mgray);
-  border-radius: 2px;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+background: var(--mgray);
+border-radius: 2px;
 }
 .vol-thumb {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 50%);
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--mgray);
-  bottom: 0;
+position: absolute;
+left: 50%;
+transform: translate(-50%, 50%);
+width: 18px; height: 18px;
+border-radius: 50%;
+background: var(--mgray);
+bottom: 0;
 }
 .vol-strip.active .vol-fill,
 .vol-strip.active .vol-thumb { background: var(--white); }
@@ -190,76 +190,77 @@ body {
 
 <!-- ── MAIN ── -->
 <div class="sc on" id="s-main">
-  <div class="bar">
-    <span>sound collector</span>
-    <span id="tilt-btn" style="display:none;cursor:pointer;border:1px solid #444;color:#666;font-size:11px;padding:3px 8px;border-radius:4px;flex-shrink:0;">↕ tilt</span>
-    <span id="clock">--:--</span>
-  </div>
-  <div class="mid" id="main-tap" style="position:relative;width:100%;cursor:pointer">
-    <canvas id="bubbles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
-    <div id="main-empty" style="position:relative;text-align:center;pointer-events:none;opacity:.5">
-      <div class="sm">no sounds yet</div>
-      <div class="hint" style="margin-top:8px">⏺ REC to start</div>
-    </div>
-  </div>
-  <div class="main-footer">
-    <button class="mfbtn red" id="rec-btn">⏺ REC</button>
-    <button class="mfbtn"     id="all-btn">▶ PLAY all</button>
-  </div>
+<div class="bar">
+<span>sound collector</span>
+<span id="tilt-btn" style="display:none;cursor:pointer;border:1px solid #444;color:#666;font-size:11px;padding:3px 8px;border-radius:4px;flex-shrink:0;">↕ tilt</span>
+<span id="clock">--:--</span>
+</div>
+<div class="mid" id="main-tap" style="position:relative;width:100%;cursor:pointer">
+<canvas id="bubbles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+<div id="main-empty" style="position:relative;text-align:center;pointer-events:none;opacity:.5">
+<div class="sm">no sounds yet</div>
+<div class="hint" style="margin-top:8px">⏺ REC to start</div>
+</div>
+</div>
+<div class="main-footer">
+<button class="mfbtn red" id="rec-btn">⏺ REC</button>
+<button class="mfbtn"     id="all-btn">▶ PLAY all</button>
+<button class="mfbtn"     id="dl-btn">⬇ DL</button>
+</div>
 </div>
 
 <!-- ── RECORDING ── -->
 <div class="sc" id="s-rec">
-  <div class="bar top-red">
-    <span>● recording</span><span></span>
-  </div>
-  <div class="mid">
-    <div class="big-time" id="rec-time">10.0</div>
-    <div class="prog-track"><div class="prog-fill" id="rec-fill"></div></div>
-    <canvas id="vis" width="220" height="48" style="margin-top:12px;border-radius:4px;background:#000;"></canvas>
-    <button class="ibtn red" id="stop-rec">stop</button>
-  </div>
+<div class="bar top-red">
+<span>● recording</span><span></span>
+</div>
+<div class="mid">
+<div class="big-time" id="rec-time">10.0</div>
+<div class="prog-track"><div class="prog-fill" id="rec-fill"></div></div>
+<canvas id="vis" width="220" height="48" style="margin-top:12px;border-radius:4px;background:#000;"></canvas>
+<button class="ibtn red" id="stop-rec">stop</button>
+</div>
 </div>
 
 <!-- ── PLAYING ALL ── -->
 <div class="sc" id="s-all">
-  <div class="bar top-green">
-    <span>▶ playing all</span><span>↻ looping</span>
-  </div>
-  <div class="mid">
-    <div style="font-size:clamp(18px,5vw,26px)">all sounds</div>
-    <div style="font-size:clamp(18px,5vw,26px);color:var(--mgray)">layered...</div>
-    <button class="ibtn green" id="stop-all">← back</button>
-  </div>
+<div class="bar top-green">
+<span>▶ playing all</span><span>↻ looping</span>
+</div>
+<div class="mid">
+<div style="font-size:clamp(18px,5vw,26px)">all sounds</div>
+<div style="font-size:clamp(18px,5vw,26px);color:var(--mgray)">layered...</div>
+<button class="ibtn green" id="stop-all">← back</button>
+</div>
 </div>
 
 <!-- ── LIST ── -->
 <div class="sc" id="s-list">
-  <div class="bar">
-    <span id="list-back" style="cursor:pointer">← back</span>
-    <span>sound list</span>
-    <span style="width:50px"></span>
-  </div>
-  <div class="list-wrap">
-    <div class="list-mid">
-      <div class="list-num" id="list-num">#--</div>
-      <div class="list-info" id="list-info">– / –</div>
-      <div class="list-lbl"  id="list-lbl"></div>
-    </div>
-    <div class="vol-strip" id="vol-strip">
-      <div class="vol-track" id="vol-track">
-        <div class="vol-fill"  id="vol-fill"></div>
-        <div class="vol-thumb" id="vol-thumb"></div>
-      </div>
-      <div class="vol-num" id="vol-num">20</div>
-    </div>
-  </div>
-  <div class="nav-bar">
-    <button class="nbtn" id="prev-btn">← PREV</button>
-    <button class="nbtn" id="play-btn">PLAY</button>
-    <button class="nbtn red" id="del-btn">DEL</button>
-    <button class="nbtn" id="next-btn">NEXT →</button>
-  </div>
+<div class="bar">
+<span id="list-back" style="cursor:pointer">← back</span>
+<span>sound list</span>
+<span style="width:50px"></span>
+</div>
+<div class="list-wrap">
+<div class="list-mid">
+<div class="list-num" id="list-num">#--</div>
+<div class="list-info" id="list-info">– / –</div>
+<div class="list-lbl"  id="list-lbl"></div>
+</div>
+<div class="vol-strip" id="vol-strip">
+<div class="vol-track" id="vol-track">
+<div class="vol-fill"  id="vol-fill"></div>
+<div class="vol-thumb" id="vol-thumb"></div>
+</div>
+<div class="vol-num" id="vol-num">20</div>
+</div>
+</div>
+<div class="nav-bar">
+<button class="nbtn" id="prev-btn">← PREV</button>
+<button class="nbtn" id="play-btn">PLAY</button>
+<button class="nbtn red" id="del-btn">DEL</button>
+<button class="nbtn" id="next-btn">NEXT →</button>
+</div>
 </div>
 
 <!-- 오류 토스트 -->
@@ -277,514 +278,582 @@ let visAC = null, visRaf = null, playAllLooping = false;
 // ── 버블 물리 / 기울기 ────────────────────────────────
 let rawGx = 0, rawGy = 0;     // 기기에서 읽은 raw 기울기
 let tiltGx = 0, tiltGy = 0;   // 저역통과 필터 적용값
+let calibBeta = null, calibGamma = null;  // 중립 자세 영점
 let bubPhys = [];              // [{x,y,vx,vy,r,alpha,phase}]
 let physRaf = null, physRunning = false;
 let tiltPermAsked = false;
 
 // ── 토스트 알림 ────────────────────────────────────────
 function toast(msg) {
-  const el = $('toast');
-  el.textContent = msg;
-  el.style.display = 'block';
-  clearTimeout(el._t);
-  el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
+const el = $('toast');
+el.textContent = msg;
+el.style.display = 'block';
+clearTimeout(el._t);
+el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
 // ── IndexedDB ──────────────────────────────────────────
 function initDB() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open('sc-v2', 1);
-    req.onupgradeneeded = e => e.target.result.createObjectStore('sounds', { keyPath: 'id', autoIncrement: true });
-    req.onsuccess = e => res(e.target.result);
-    req.onerror   = () => rej(req.error);
-  });
+return new Promise((res, rej) => {
+const req = indexedDB.open('sc-v2', 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore('sounds', { keyPath: 'id', autoIncrement: true });
+req.onsuccess = e => res(e.target.result);
+req.onerror   = () => rej(req.error);
+});
 }
 function dbLoadAll() {
-  return new Promise((res, rej) => {
-    const req = db.transaction('sounds').objectStore('sounds').getAll();
-    req.onsuccess = () => res(req.result);
-    req.onerror   = () => rej(req.error);
-  });
+return new Promise((res, rej) => {
+const req = db.transaction('sounds').objectStore('sounds').getAll();
+req.onsuccess = () => res(req.result);
+req.onerror   = () => rej(req.error);
+});
 }
 function dbSave(blob) {
-  return new Promise((res, rej) => {
-    const t = db.transaction('sounds', 'readwrite');
-    const s = t.objectStore('sounds');
-    t.oncomplete = res;
-    t.onerror    = () => rej(t.error);
-    if (sounds.length >= 50) {
-      const cr = s.openCursor();
-      cr.onsuccess = e => { if (e.target.result) e.target.result.delete(); s.add({ blob, ts: Date.now() }); };
-    } else {
-      s.add({ blob, ts: Date.now() });
-    }
-  });
+return new Promise((res, rej) => {
+const t = db.transaction('sounds', 'readwrite');
+const s = t.objectStore('sounds');
+t.oncomplete = res;
+t.onerror    = () => rej(t.error);
+if (sounds.length >= 50) {
+const cr = s.openCursor();
+cr.onsuccess = e => { if (e.target.result) e.target.result.delete(); s.add({ blob, ts: Date.now() }); };
+} else {
+s.add({ blob, ts: Date.now() });
+}
+});
 }
 async function reloadSounds() {
-  sounds     = await dbLoadAll();
-  soundCount = sounds.length;
+sounds     = await dbLoadAll();
+soundCount = sounds.length;
 }
 function dbDelete(id) {
-  return new Promise((res, rej) => {
-    const t = db.transaction('sounds', 'readwrite');
-    t.oncomplete = res; t.onerror = () => rej(t.error);
-    t.objectStore('sounds').delete(id);
-  });
+return new Promise((res, rej) => {
+const t = db.transaction('sounds', 'readwrite');
+t.oncomplete = res; t.onerror = () => rej(t.error);
+t.objectStore('sounds').delete(id);
+});
 }
 async function deleteSelected() {
-  if (!soundCount) return;
-  const item = sounds[selectedIdx - 1];
-  if (!item) return;
-  stopAudio(); listPlaying = false;
-  try {
-    await dbDelete(item.id);
-    await reloadSounds();
-    toast(`sound #${String(selectedIdx).padStart(2,'0')} 삭제됨`);
-    if (soundCount === 0) { goMain(); return; }
-    if (selectedIdx > soundCount) selectedIdx = soundCount;
-    refreshList();
-  } catch(e) { toast('삭제 오류: ' + e.message); }
+if (!soundCount) return;
+const item = sounds[selectedIdx - 1];
+if (!item) return;
+stopAudio(); listPlaying = false;
+try {
+await dbDelete(item.id);
+await reloadSounds();
+toast(`sound #${String(selectedIdx).padStart(2,'0')} 삭제됨`);
+if (soundCount === 0) { goMain(); return; }
+if (selectedIdx > soundCount) selectedIdx = soundCount;
+refreshList();
+} catch(e) { toast('삭제 오류: ' + e.message); }
 }
 
 // ── 오디오 재생 ────────────────────────────────────────
 function stopAudio() {
-  activeAudios.forEach(a => { try { a.pause(); a.src = ''; } catch(e){} try { URL.revokeObjectURL(a._url); } catch(e){} });
-  activeAudios = [];
+activeAudios.forEach(a => { try { a.pause(); a.src = ''; } catch(e){} try { URL.revokeObjectURL(a._url); } catch(e){} });
+activeAudios = [];
 }
 function playBlobEl(blob, onEnded) {
-  if (!blob || blob.size === 0) { toast('소리 데이터 없음'); return Promise.resolve(); }
-  const url = URL.createObjectURL(blob);
-  const el  = document.createElement('audio');
-  el.setAttribute('playsinline', '');
-  el.setAttribute('webkit-playsinline', '');
-  el._url   = url;
-  el.src    = url;
-  el.volume = Math.max(0, Math.min(1, volume / 30));
-  el.onended = () => {
-    try { URL.revokeObjectURL(url); } catch(e){}
-    activeAudios = activeAudios.filter(a => a !== el);
-    if (onEnded) onEnded();
-  };
-  el.onerror = () => {
-    try { URL.revokeObjectURL(url); } catch(e){}
-    activeAudios = activeAudios.filter(a => a !== el);
-    toast('재생 오류 (형식 미지원일 수 있음)');
-    if (onEnded) onEnded();
-  };
-  activeAudios.push(el);
-  return el.play().catch(e => { toast('재생 실패: ' + e.message); });
+if (!blob || blob.size === 0) { toast('소리 데이터 없음'); return Promise.resolve(); }
+const url = URL.createObjectURL(blob);
+const el  = document.createElement('audio');
+el.setAttribute('playsinline', '');
+el.setAttribute('webkit-playsinline', '');
+el._url   = url;
+el.src    = url;
+el.volume = Math.max(0, Math.min(1, volume / 30));
+el.onended = () => {
+try { URL.revokeObjectURL(url); } catch(e){}
+activeAudios = activeAudios.filter(a => a !== el);
+if (onEnded) onEnded();
+};
+el.onerror = () => {
+try { URL.revokeObjectURL(url); } catch(e){}
+activeAudios = activeAudios.filter(a => a !== el);
+toast('재생 오류 (형식 미지원일 수 있음)');
+if (onEnded) onEnded();
+};
+activeAudios.push(el);
+return el.play().catch(e => { toast('재생 실패: ' + e.message); });
 }
 
 // ── 화면 전환 ──────────────────────────────────────────
 const $ = id => document.getElementById(id);
 
 function show(id) {
-  document.querySelectorAll('.sc').forEach(s => s.classList.toggle('on', s.id === id));
-  if (id === 's-main') setTimeout(startPhysics, 60);
-  else stopPhysics();
+document.querySelectorAll('.sc').forEach(s => s.classList.toggle('on', s.id === id));
+if (id === 's-main') setTimeout(startPhysics, 60);
+else stopPhysics();
 }
 
 function formatTs(ts) {
-  if (!ts) return '';
-  const d = new Date(ts), pad = n => String(n).padStart(2,'0');
-  return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+if (!ts) return '';
+const d = new Date(ts), pad = n => String(n).padStart(2,'0');
+return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 // ── 버블 씨드 랜덤 (ESP32와 동일 LCG) ────────────────
 function seededRnd(n) {
-  n = ((n ^ 61) ^ (n >>> 16)) >>> 0;
-  n = (n + (n << 3)) >>> 0;
-  n = (n ^ (n >>> 4)) >>> 0;
-  n = (n * 0x27d4eb2d) >>> 0;
-  n = (n ^ (n >>> 15)) >>> 0;
-  return n / 4294967296;
+n = ((n ^ 61) ^ (n >>> 16)) >>> 0;
+n = (n + (n << 3)) >>> 0;
+n = (n ^ (n >>> 4)) >>> 0;
+n = (n * 0x27d4eb2d) >>> 0;
+n = (n ^ (n >>> 15)) >>> 0;
+return n / 4294967296;
 }
 
 function makeBubble(item, W, H) {
-  const id = (item.id || 1) >>> 0;
-  const r1 = seededRnd(id * 1664525  + 1013904223);
-  const r2 = seededRnd(id * 22695477 + (item.ts || 0) % 99991 + 1);
-  const r3 = seededRnd(id * 6364136  + 1442695040);
-  const r4 = seededRnd(id * 2891336453 + 1234567);
-  const r5 = seededRnd(id * 1234567    + 9876543);
-  const r  = 2.5 + r3 * 4.5;
-  return {
-    x:     Math.max(r, Math.min(W - r, 20 + r1 * (W - 40))),
-    y:     Math.max(r, Math.min(H - r, 20 + r2 * (H - 40))),
-    vx:    (r4 - 0.5) * 0.5,
-    vy:    (r5 - 0.5) * 0.5,
-    r,
-    alpha: 0.45 + r3 * 0.55,
-    phase: seededRnd(id * 31337) * Math.PI * 2,
-  };
+const id = (item.id || 1) >>> 0;
+const r1 = seededRnd(id * 1664525  + 1013904223);
+const r2 = seededRnd(id * 22695477 + (item.ts || 0) % 99991 + 1);
+const r3 = seededRnd(id * 6364136  + 1442695040);
+const r4 = seededRnd(id * 2891336453 + 1234567);
+const r5 = seededRnd(id * 1234567    + 9876543);
+const r  = 2.5 + r3 * 4.5;
+return {
+x:     Math.max(r, Math.min(W - r, 20 + r1 * (W - 40))),
+y:     Math.max(r, Math.min(H - r, 20 + r2 * (H - 40))),
+vx:    (r4 - 0.5) * 0.5,
+vy:    (r5 - 0.5) * 0.5,
+r,
+alpha: 0.45 + r3 * 0.55,
+phase: seededRnd(id * 31337) * Math.PI * 2,
+};
 }
 
 // ── 버블 물리 루프 ────────────────────────────────────
 function startPhysics() {
-  const canvas = $('bubbles'), mid = $('main-tap');
-  if (!canvas || !mid) return;
-  stopPhysics();
+const canvas = $('bubbles'), mid = $('main-tap');
+if (!canvas || !mid) return;
+stopPhysics();
 
-  const W = mid.clientWidth  || 300;
-  const H = mid.clientHeight || 400;
-  canvas.width  = W;
-  canvas.height = H;
+const W = mid.clientWidth  || 300;
+const H = mid.clientHeight || 400;
+canvas.width  = W;
+canvas.height = H;
 
-  const empty = $('main-empty');
-  if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
+const empty = $('main-empty');
+if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
 
-  bubPhys = sounds.map(item => makeBubble(item, W, H));
+bubPhys = sounds.map(item => makeBubble(item, W, H));
 
-  physRunning = true;
-  physRaf = requestAnimationFrame(physLoop);
+physRunning = true;
+physRaf = requestAnimationFrame(physLoop);
 }
 
 function stopPhysics() {
-  physRunning = false;
-  cancelAnimationFrame(physRaf);
-  physRaf = null;
+physRunning = false;
+cancelAnimationFrame(physRaf);
+physRaf = null;
 }
 
 function physLoop(t) {
-  if (!physRunning) return;
-  const canvas = $('bubbles'), mid = $('main-tap');
-  if (!canvas || !mid) { physRunning = false; return; }
+if (!physRunning) return;
+const canvas = $('bubbles'), mid = $('main-tap');
+if (!canvas || !mid) { physRunning = false; return; }
 
-  const W = mid.clientWidth, H = mid.clientHeight;
-  if (canvas.width !== W || canvas.height !== H) {
-    canvas.width = W; canvas.height = H;
-  }
+const W = mid.clientWidth, H = mid.clientHeight;
+if (canvas.width !== W || canvas.height !== H) {
+canvas.width = W; canvas.height = H;
+}
 
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, W, H);
+const ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, W, H);
 
-  // 저역통과 필터: 급격한 기울기 변화 완화
-  tiltGx += (rawGx - tiltGx) * 0.14;
-  tiltGy += (rawGy - tiltGy) * 0.14;
+// 저역통과 필터: 급격한 기울기 변화 완화
+tiltGx += (rawGx - tiltGx) * 0.14;
+tiltGy += (rawGy - tiltGy) * 0.14;
 
-  const GRAV  = 0.22;   // 기울기 중력 세기
-  const DRIFT = 0.005;  // 무중력 유영 세기
-  const DAMP  = 0.95;   // 속도 감쇠
+const GRAV  = 0.22;   // 기울기 중력 세기
+const DRIFT = 0.005;  // 무중력 유영 세기
+const DAMP  = 0.95;   // 속도 감쇠
 
-  bubPhys.forEach(b => {
-    // 무중력 유영 (각 버블마다 위상 다름)
-    b.vx += Math.sin(t * 0.00024 + b.phase)        * DRIFT;
-    b.vy += Math.cos(t * 0.00031 + b.phase * 1.37) * DRIFT;
+bubPhys.forEach(b => {
+// 무중력 유영 (각 버블마다 위상 다름)
+b.vx += Math.sin(t * 0.00024 + b.phase)        * DRIFT;
+b.vy += Math.cos(t * 0.00031 + b.phase * 1.37) * DRIFT;
 
-    // 기울기 중력
-    b.vx += tiltGx * GRAV;
-    b.vy += tiltGy * GRAV;
+// 기울기 중력
+b.vx += tiltGx * GRAV;
+b.vy += tiltGy * GRAV;
 
-    // 감쇠
-    b.vx *= DAMP;
-    b.vy *= DAMP;
+// 감쇠
+b.vx *= DAMP;
+b.vy *= DAMP;
 
-    // 위치 업데이트
-    b.x += b.vx;
-    b.y += b.vy;
+// 위치 업데이트
+b.x += b.vx;
+b.y += b.vy;
 
-    // 벽 반사
-    if (b.x < b.r)     { b.x = b.r;     b.vx =  Math.abs(b.vx) * 0.4; }
-    if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * 0.4; }
-    if (b.y < b.r)     { b.y = b.r;     b.vy =  Math.abs(b.vy) * 0.4; }
-    if (b.y > H - b.r) { b.y = H - b.r; b.vy = -Math.abs(b.vy) * 0.4; }
-  });
+// 벽 반사
+if (b.x < b.r)     { b.x = b.r;     b.vx =  Math.abs(b.vx) * 0.4; }
+if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * 0.4; }
+if (b.y < b.r)     { b.y = b.r;     b.vy =  Math.abs(b.vy) * 0.4; }
+if (b.y > H - b.r) { b.y = H - b.r; b.vy = -Math.abs(b.vy) * 0.4; }
+});
 
-  // 버블 간 충돌
-  for (let i = 0; i < bubPhys.length; i++) {
-    for (let j = i + 1; j < bubPhys.length; j++) {
-      const a = bubPhys[i], b = bubPhys[j];
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
-      const minD = a.r + b.r + 1;
-      if (dist < minD) {
-        const nx = dx / dist, ny = dy / dist;
-        const overlap = (minD - dist) * 0.5;
-        a.x -= nx * overlap; a.y -= ny * overlap;
-        b.x += nx * overlap; b.y += ny * overlap;
-        const dot = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
-        if (dot > 0) {
-          const imp = dot * 0.55;
-          a.vx -= imp * nx; a.vy -= imp * ny;
-          b.vx += imp * nx; b.vy += imp * ny;
-        }
-      }
-    }
-  }
+// 버블 간 충돌
+for (let i = 0; i < bubPhys.length; i++) {
+for (let j = i + 1; j < bubPhys.length; j++) {
+const a = bubPhys[i], b = bubPhys[j];
+const dx = b.x - a.x, dy = b.y - a.y;
+const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+const minD = a.r + b.r + 1;
+if (dist < minD) {
+const nx = dx / dist, ny = dy / dist;
+const overlap = (minD - dist) * 0.5;
+a.x -= nx * overlap; a.y -= ny * overlap;
+b.x += nx * overlap; b.y += ny * overlap;
+const dot = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+if (dot > 0) {
+const imp = dot * 0.55;
+a.vx -= imp * nx; a.vy -= imp * ny;
+b.vx += imp * nx; b.vy += imp * ny;
+}
+}
+}
+}
 
-  bubPhys.forEach(b => {
-    // 그리기 (미세 글로우 펄스)
-    const glow = 0.25 + 0.15 * Math.sin(t * 0.0007 + b.phase);
-    ctx.shadowColor = `rgba(255,255,255,${glow.toFixed(2)})`;
-    ctx.shadowBlur  = 8;
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${b.alpha.toFixed(2)})`;
-    ctx.fill();
-  });
-  ctx.shadowBlur = 0;
+bubPhys.forEach(b => {
+// 그리기 (미세 글로우 펄스)
+const glow = 0.25 + 0.15 * Math.sin(t * 0.0007 + b.phase);
+ctx.shadowColor = `rgba(255,255,255,${glow.toFixed(2)})`;
+ctx.shadowBlur  = 8;
+ctx.beginPath();
+ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+ctx.fillStyle = `rgba(255,255,255,${b.alpha.toFixed(2)})`;
+ctx.fill();
+});
+ctx.shadowBlur = 0;
 
-  physRaf = requestAnimationFrame(physLoop);
+physRaf = requestAnimationFrame(physLoop);
 }
 
 // ── 기기 기울기 (자이로) ──────────────────────────────
 function setupTilt() {
-  if (typeof DeviceOrientationEvent === 'undefined') return;
+if (typeof DeviceOrientationEvent === 'undefined') return;
 
-  function onOrientation(e) {
-    const beta  = e.beta  ?? 90;
-    const gamma = e.gamma ?? 0;
-    // gamma: 좌우 기울기 (-90~90), 양수=오른쪽
-    // beta:  앞뒤 기울기 (0=평평, 90=수직). (90-beta)로 부호 맞춤:
-    //        보통 들 때(beta≈75) → 약간 아래, 더 기울이면 더 강하게
-    rawGx = Math.max(-1, Math.min(1,  gamma      / 45));
-    rawGy = Math.max(-1, Math.min(1, (90 - beta) / 45));
-  }
+function onOrientation(e) {
+    const beta  = (e.beta  !== null && e.beta  !== undefined) ? e.beta  : 90;
+    const gamma = (e.gamma !== null && e.gamma !== undefined) ? e.gamma : 0;
 
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    // iOS 13+: 반드시 버튼 탭(직접 유저 제스처)에서 요청해야 함
-    const btn = $('tilt-btn');
-    btn.style.display = '';
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      DeviceOrientationEvent.requestPermission()
-        .then(p => {
-          if (p === 'granted') {
-            window.addEventListener('deviceorientation', onOrientation);
-            btn.textContent = '↕ on';
-            btn.style.color = 'var(--green)';
-            btn.style.borderColor = 'var(--green)';
-            setTimeout(() => { btn.style.display = 'none'; }, 1500);
-          } else {
-            btn.textContent = '↕ 거부됨';
-            btn.style.color = 'var(--red)';
-          }
-        })
-        .catch(() => {});
-    });
-  } else {
-    window.addEventListener('deviceorientation', onOrientation);
-  }
+    // 첫 이벤트 = 현재 자세를 영점으로 기록
+    if (calibBeta === null) { calibBeta = beta; calibGamma = gamma; return; }
+
+    // 영점에서 벗어난 각도에 데드존(±10°) 적용 → 중립 자세에서는 중력 0
+    const DEAD = 10, RANGE = 30;
+    const dead = d => {
+      const s = d < 0 ? -1 : 1, a = Math.abs(d);
+      return a < DEAD ? 0 : s * Math.min(1, (a - DEAD) / RANGE);
+    };
+    rawGx = dead(gamma - calibGamma);
+    rawGy = dead(beta  - calibBeta);
+}
+
+if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+// iOS 13+: 반드시 버튼 탭(직접 유저 제스처)에서 요청해야 함
+const btn = $('tilt-btn');
+btn.style.display = '';
+btn.addEventListener('click', e => {
+e.stopPropagation();
+      calibBeta = null; calibGamma = null;  // 탭할 때 영점 초기화 → 다음 이벤트에서 재보정
+DeviceOrientationEvent.requestPermission()
+.then(p => {
+if (p === 'granted') {
+window.addEventListener('deviceorientation', onOrientation);
+btn.textContent = '↕ on';
+btn.style.color = 'var(--green)';
+btn.style.borderColor = 'var(--green)';
+setTimeout(() => { btn.style.display = 'none'; }, 1500);
+} else {
+btn.textContent = '↕ 거부됨';
+btn.style.color = 'var(--red)';
+}
+})
+.catch(() => {});
+});
+} else {
+    // Android/기타: deviceorientation 사용, 첫 이벤트에서 자동 영점 보정
+    calibBeta = null; calibGamma = null;
+window.addEventListener('deviceorientation', onOrientation);
+}
 }
 
 function refreshMain() {
-  if (physRunning) {
-    // 새 소리 추가됐으면 버블 동기화
-    const canvas = $('bubbles');
-    const W = canvas.width  || $('main-tap').clientWidth  || 300;
-    const H = canvas.height || $('main-tap').clientHeight || 400;
-    while (bubPhys.length < sounds.length) {
-      bubPhys.push(makeBubble(sounds[bubPhys.length], W, H));
-    }
-    bubPhys.length = sounds.length;
-    const empty = $('main-empty');
-    if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
-  } else {
-    startPhysics();
-  }
+if (physRunning) {
+// 새 소리 추가됐으면 버블 동기화
+const canvas = $('bubbles');
+const W = canvas.width  || $('main-tap').clientWidth  || 300;
+const H = canvas.height || $('main-tap').clientHeight || 400;
+while (bubPhys.length < sounds.length) {
+bubPhys.push(makeBubble(sounds[bubPhys.length], W, H));
+}
+bubPhys.length = sounds.length;
+const empty = $('main-empty');
+if (empty) empty.style.display = soundCount === 0 ? '' : 'none';
+} else {
+startPhysics();
+}
 }
 
 function refreshList() {
-  $('list-num').textContent  = soundCount ? '#' + String(selectedIdx).padStart(2, '0') : '#--';
-  $('list-info').textContent = soundCount ? `${selectedIdx} / ${soundCount}` : '– / –';
-  const item = sounds[selectedIdx - 1];
-  const lbl  = $('list-lbl');
-  if (listPlaying) {
-    lbl.textContent = 'playing...'; lbl.style.color = '';
-  } else if (item && item.ts) {
-    lbl.textContent = formatTs(item.ts); lbl.style.color = 'var(--mgray)';
-  } else {
-    lbl.textContent = '';
-  }
-  $('play-btn').textContent = listPlaying ? 'STOP' : 'PLAY';
-  $('play-btn').classList.toggle('on', listPlaying);
+$('list-num').textContent  = soundCount ? '#' + String(selectedIdx).padStart(2, '0') : '#--';
+$('list-info').textContent = soundCount ? `${selectedIdx} / ${soundCount}` : '– / –';
+const item = sounds[selectedIdx - 1];
+const lbl  = $('list-lbl');
+if (listPlaying) {
+lbl.textContent = 'playing...'; lbl.style.color = '';
+} else if (item && item.ts) {
+lbl.textContent = formatTs(item.ts); lbl.style.color = 'var(--mgray)';
+} else {
+lbl.textContent = '';
+}
+$('play-btn').textContent = listPlaying ? 'STOP' : 'PLAY';
+$('play-btn').classList.toggle('on', listPlaying);
 }
 
 function refreshVol() {
-  const h = $('vol-track').getBoundingClientRect().height;
-  if (!h) return;
-  const fh = (volume / 30) * h;
-  $('vol-fill').style.height  = fh + 'px';
-  $('vol-thumb').style.bottom = fh + 'px';
-  $('vol-num').textContent    = volume;
+const h = $('vol-track').getBoundingClientRect().height;
+if (!h) return;
+const fh = (volume / 30) * h;
+$('vol-fill').style.height  = fh + 'px';
+$('vol-thumb').style.bottom = fh + 'px';
+$('vol-num').textContent    = volume;
 }
 
 // ── 네비게이션 ─────────────────────────────────────────
 function goMain() { stopAudio(); listPlaying = false; show('s-main'); }
 
 function goList() {
-  if (soundCount > 0 && selectedIdx > soundCount) selectedIdx = soundCount;
-  if (soundCount > 0 && selectedIdx < 1)          selectedIdx = 1;
-  refreshList(); show('s-list'); setTimeout(refreshVol, 30);
+if (soundCount > 0 && selectedIdx > soundCount) selectedIdx = soundCount;
+if (soundCount > 0 && selectedIdx < 1)          selectedIdx = 1;
+refreshList(); show('s-list'); setTimeout(refreshVol, 30);
 }
 
 function doPlayOne() {
-  stopAudio();
-  const item = sounds[selectedIdx - 1];
-  if (!item) { listPlaying = false; refreshList(); return; }
-  playBlobEl(item.blob, () => { if (listPlaying) { listPlaying = false; refreshList(); } });
+stopAudio();
+const item = sounds[selectedIdx - 1];
+if (!item) { listPlaying = false; refreshList(); return; }
+playBlobEl(item.blob, () => { if (listPlaying) { listPlaying = false; refreshList(); } });
 }
 
 function togglePlay() {
-  if (!soundCount) return;
-  listPlaying = !listPlaying;
-  refreshList();
-  if (listPlaying) doPlayOne(); else stopAudio();
+if (!soundCount) return;
+listPlaying = !listPlaying;
+refreshList();
+if (listPlaying) doPlayOne(); else stopAudio();
 }
 
 function goPrev() {
-  if (!soundCount) return;
-  if (selectedIdx > 1) selectedIdx--;
-  if (listPlaying) doPlayOne();
-  refreshList();
+if (!soundCount) return;
+if (selectedIdx > 1) selectedIdx--;
+if (listPlaying) doPlayOne();
+refreshList();
 }
 
 function goNext() {
-  if (!soundCount) return;
-  if (selectedIdx < soundCount) selectedIdx++;
-  if (listPlaying) doPlayOne();
-  refreshList();
+if (!soundCount) return;
+if (selectedIdx < soundCount) selectedIdx++;
+if (listPlaying) doPlayOne();
+refreshList();
 }
 
 // ── 녹음 비주얼라이저 ──────────────────────────────────
 function startVisualizer(stream) {
-  const canvas = $('vis');
-  if (!canvas) return;
-  try {
-    visAC = new (window.AudioContext || window.webkitAudioContext)();
-    const src = visAC.createMediaStreamSource(stream);
-    const an  = visAC.createAnalyser();
-    an.fftSize = 128;
-    src.connect(an);
-    const data = new Uint8Array(an.frequencyBinCount);
-    const ctx  = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    (function draw() {
-      visRaf = requestAnimationFrame(draw);
-      an.getByteFrequencyData(data);
-      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-      const bw = W / data.length;
-      for (let i = 0; i < data.length; i++) {
-        const h = (data[i] / 255) * H;
-        ctx.fillStyle = `rgb(${Math.floor(data[i]*0.8+55)},20,20)`;
-        ctx.fillRect(i * bw, H - h, bw - 1, h);
-      }
-    })();
-  } catch(e) { console.warn('vis error', e); }
+const canvas = $('vis');
+if (!canvas) return;
+try {
+visAC = new (window.AudioContext || window.webkitAudioContext)();
+const src = visAC.createMediaStreamSource(stream);
+const an  = visAC.createAnalyser();
+an.fftSize = 128;
+src.connect(an);
+const data = new Uint8Array(an.frequencyBinCount);
+const ctx  = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+(function draw() {
+visRaf = requestAnimationFrame(draw);
+an.getByteFrequencyData(data);
+ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+const bw = W / data.length;
+for (let i = 0; i < data.length; i++) {
+const h = (data[i] / 255) * H;
+ctx.fillStyle = `rgb(${Math.floor(data[i]*0.8+55)},20,20)`;
+ctx.fillRect(i * bw, H - h, bw - 1, h);
+}
+})();
+} catch(e) { console.warn('vis error', e); }
 }
 
 function stopVisualizer() {
-  cancelAnimationFrame(visRaf); visRaf = null;
-  if (visAC) { visAC.close().catch(()=>{}); visAC = null; }
-  const c = $('vis'); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+cancelAnimationFrame(visRaf); visRaf = null;
+if (visAC) { visAC.close().catch(()=>{}); visAC = null; }
+const c = $('vis'); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
 }
 
 // ── 녹음 ───────────────────────────────────────────────
 async function startRec() {
-  let stream;
-  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); }
-  catch(e) { alert('마이크 오류: ' + (e.message || e)); return; }
+let stream;
+try { stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); }
+catch(e) { alert('마이크 오류: ' + (e.message || e)); return; }
 
-  startVisualizer(stream);
+startVisualizer(stream);
 
-  const mimes = ['audio/mp4', 'audio/aac', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
-  const mime  = mimes.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch(_){ return false; } });
-  try       { mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
-  catch(_)  { mediaRec = new MediaRecorder(stream); }
+const mimes = ['audio/mp4', 'audio/aac', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
+const mime  = mimes.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch(_){ return false; } });
+try       { mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
+catch(_)  { mediaRec = new MediaRecorder(stream); }
 
-  recChunks = [];
-  mediaRec.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
-  mediaRec.onstop = async () => {
-    stopVisualizer();
-    stream.getTracks().forEach(t => t.stop());
-    if (recChunks.length > 0) {
-      const blob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
-      try { await dbSave(blob); await reloadSounds(); }
-      catch(e) { toast('저장 오류: ' + e.message); }
-    } else {
-      toast('녹음 데이터 없음');
-    }
-    goMain();
-  };
+recChunks = [];
+mediaRec.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
+mediaRec.onstop = async () => {
+stopVisualizer();
+stream.getTracks().forEach(t => t.stop());
+if (recChunks.length > 0) {
+const blob = new Blob(recChunks, { type: mediaRec.mimeType || 'audio/mp4' });
+try { await dbSave(blob); await reloadSounds(); }
+catch(e) { toast('저장 오류: ' + e.message); }
+} else {
+toast('녹음 데이터 없음');
+}
+goMain();
+};
 
-  mediaRec.start(200);
-  const t0 = Date.now();
-  show('s-rec');
+mediaRec.start(200);
+const t0 = Date.now();
+show('s-rec');
 
-  (function tick() {
-    const elapsed = (Date.now() - t0) / 1000;
-    const left    = Math.max(0, 10 - elapsed);
-    $('rec-time').textContent = left.toFixed(1);
-    $('rec-fill').style.width = Math.min(elapsed / 10 * 100, 100) + '%';
-    if (left <= 0) { stopRec(); return; }
-    recRaf = requestAnimationFrame(tick);
-  })();
+(function tick() {
+const elapsed = (Date.now() - t0) / 1000;
+const left    = Math.max(0, 10 - elapsed);
+$('rec-time').textContent = left.toFixed(1);
+$('rec-fill').style.width = Math.min(elapsed / 10 * 100, 100) + '%';
+if (left <= 0) { stopRec(); return; }
+recRaf = requestAnimationFrame(tick);
+})();
 }
 
 function stopRec() {
-  cancelAnimationFrame(recRaf);
-  if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+cancelAnimationFrame(recRaf);
+if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
 }
 
 // ── 전체 재생 (반복) ────────────────────────────────────
 function playAllOnce() {
-  if (!playAllLooping || !soundCount) return;
-  let remaining = sounds.length;
-  const done = () => { if (--remaining <= 0 && playAllLooping) setTimeout(playAllOnce, 400); };
-  sounds.forEach(item => playBlobEl(item.blob, done));
+if (!playAllLooping || !soundCount) return;
+let remaining = sounds.length;
+const done = () => { if (--remaining <= 0 && playAllLooping) setTimeout(playAllOnce, 400); };
+sounds.forEach(item => playBlobEl(item.blob, done));
 }
 function startAll() {
-  if (!soundCount) return;
-  show('s-all');
-  stopAudio();
-  playAllLooping = true;
-  playAllOnce();
+if (!soundCount) return;
+show('s-all');
+stopAudio();
+playAllLooping = true;
+playAllOnce();
 }
 
 // ── 볼륨 ───────────────────────────────────────────────
 function setVolFromY(y) {
-  const rect = $('vol-track').getBoundingClientRect();
-  volume = Math.round((1 - Math.max(0, Math.min(1, (y - rect.top) / rect.height))) * 30);
-  activeAudios.forEach(a => { try { a.volume = volume / 30; } catch(e){} });
-  refreshVol();
+const rect = $('vol-track').getBoundingClientRect();
+volume = Math.round((1 - Math.max(0, Math.min(1, (y - rect.top) / rect.height))) * 30);
+activeAudios.forEach(a => { try { a.volume = volume / 30; } catch(e){} });
+refreshVol();
 }
 
 // ── 시계 ───────────────────────────────────────────────
 function updateClock() {
-  const d = new Date();
-  $('clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+const d = new Date();
+$('clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 
 // ── 이벤트 등록 ────────────────────────────────────────
 function setupEvents() {
-  $('main-tap').addEventListener('click', goList);
-  $('rec-btn').addEventListener('click',  e => { e.stopPropagation(); startRec(); });
-  $('all-btn').addEventListener('click',  e => { e.stopPropagation(); startAll(); });
-  $('stop-rec').addEventListener('click', stopRec);
-  $('stop-all').addEventListener('click', () => { playAllLooping = false; stopAudio(); goMain(); });
-  $('list-back').addEventListener('click', goMain);
-  $('prev-btn').addEventListener('click', goPrev);
-  $('play-btn').addEventListener('click', togglePlay);
-  $('next-btn').addEventListener('click', goNext);
-  $('del-btn').addEventListener('click',  deleteSelected);
+$('main-tap').addEventListener('click', goList);
+$('rec-btn').addEventListener('click',  e => { e.stopPropagation(); startRec(); });
+$('all-btn').addEventListener('click',  e => { e.stopPropagation(); startAll(); });
+$('stop-rec').addEventListener('click', stopRec);
+$('stop-all').addEventListener('click', () => { playAllLooping = false; stopAudio(); goMain(); });
+$('list-back').addEventListener('click', goMain);
+$('prev-btn').addEventListener('click', goPrev);
+$('play-btn').addEventListener('click', togglePlay);
+$('next-btn').addEventListener('click', goNext);
+$('del-btn').addEventListener('click',  deleteSelected);
+$('dl-btn').addEventListener('click',   e => { e.stopPropagation(); downloadMix(); });
 
-  const strip = $('vol-strip');
-  let drag = false;
-  strip.addEventListener('touchstart', e => { e.preventDefault(); strip.classList.add('active');  setVolFromY(e.touches[0].clientY); }, { passive: false });
-  strip.addEventListener('touchmove',  e => { e.preventDefault(); setVolFromY(e.touches[0].clientY); }, { passive: false });
-  strip.addEventListener('touchend',   () => strip.classList.remove('active'));
-  strip.addEventListener('mousedown',  e => { drag = true; strip.classList.add('active'); setVolFromY(e.clientY); });
-  document.addEventListener('mousemove', e => { if (drag) setVolFromY(e.clientY); });
-  document.addEventListener('mouseup',   () => { if (drag) { drag = false; strip.classList.remove('active'); } });
+const strip = $('vol-strip');
+let drag = false;
+strip.addEventListener('touchstart', e => { e.preventDefault(); strip.classList.add('active');  setVolFromY(e.touches[0].clientY); }, { passive: false });
+strip.addEventListener('touchmove',  e => { e.preventDefault(); setVolFromY(e.touches[0].clientY); }, { passive: false });
+strip.addEventListener('touchend',   () => strip.classList.remove('active'));
+strip.addEventListener('mousedown',  e => { drag = true; strip.classList.add('active'); setVolFromY(e.clientY); });
+document.addEventListener('mousemove', e => { if (drag) setVolFromY(e.clientY); });
+document.addEventListener('mouseup',   () => { if (drag) { drag = false; strip.classList.remove('active'); } });
+}
+
+// ── 믹스 다운로드 ─────────────────────────────────────
+function pcmToWav(samples, sr) {
+const len = samples.length;
+const buf = new ArrayBuffer(44 + len * 2);
+const v   = new DataView(buf);
+const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+str(0, 'RIFF'); v.setUint32(4, 36 + len * 2, true);
+str(8, 'WAVE'); str(12, 'fmt ');
+v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true);
+v.setUint16(32, 2, true);  v.setUint16(34, 16, true);
+str(36, 'data'); v.setUint32(40, len * 2, true);
+for (let i = 0; i < len; i++) {
+const s = Math.max(-1, Math.min(1, samples[i]));
+v.setInt16(44 + i * 2, s * (s < 0 ? 0x8000 : 0x7FFF), true);
+}
+return new Blob([buf], { type: 'audio/wav' });
+}
+
+async function downloadMix() {
+if (!soundCount) { toast('소리가 없습니다'); return; }
+const btn = $('dl-btn');
+btn.textContent = '...'; btn.disabled = true;
+try {
+const tempAC = new (window.AudioContext || window.webkitAudioContext)();
+const decoded = [];
+for (const item of sounds) {
+  try {
+    const ab  = await item.blob.arrayBuffer();
+    const buf = await new Promise((res, rej) => tempAC.decodeAudioData(ab.slice(0), res, rej));
+    decoded.push(buf);
+  } catch(e) { console.warn('decode skip', item.id, e); }
+}
+tempAC.close();
+if (!decoded.length) { toast('디코딩 실패'); return; }
+
+const sr     = decoded[0].sampleRate;
+const maxLen = Math.max(...decoded.map(b => b.length));
+const off    = new OfflineAudioContext(1, maxLen, sr);
+const norm   = 1 / Math.sqrt(decoded.length);
+decoded.forEach(buf => {
+  const g = off.createGain(); g.gain.value = norm;
+  const s = off.createBufferSource(); s.buffer = buf;
+  s.connect(g); g.connect(off.destination); s.start(0);
+});
+const mixed = await off.startRendering();
+const wav   = pcmToWav(mixed.getChannelData(0), sr);
+const url   = URL.createObjectURL(wav);
+const a     = document.createElement('a');
+a.href = url; a.download = 'mix.wav'; a.click();
+setTimeout(() => URL.revokeObjectURL(url), 5000);
+toast('다운로드 시작!');
+} catch(e) { toast('오류: ' + e.message); }
+finally { btn.textContent = '⬇ DL'; btn.disabled = false; }
 }
 
 // ── 초기화 ─────────────────────────────────────────────
 (async () => {
-  try { db = await initDB(); await reloadSounds(); } catch(e) { toast('DB 오류: ' + e); }
-  setTimeout(startPhysics, 100);
-  updateClock(); setInterval(updateClock, 30000);
-  setupEvents();
-  setupTilt();
+try { db = await initDB(); await reloadSounds(); } catch(e) { toast('DB 오류: ' + e); }
+setTimeout(startPhysics, 100);
+updateClock(); setInterval(updateClock, 30000);
+setupEvents();
+setupTilt();
 })();
 </script>
 </body>
